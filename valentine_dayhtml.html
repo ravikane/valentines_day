@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day</title>
+    <style>
+        :root {
+            --primary-red: #ff4d6d;
+            --dark-red: #800f2f;
+            --gold: #ffb703;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Magic Door Container */
+        .door-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Hidden Content */
+        .reveal-content {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .reveal-content img {
+            max-width: 80vw;
+            max-height: 60vh;
+            border: 8px solid white;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(255, 77, 109, 0.6);
+        }
+
+        .happy-valentine {
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: var(--primary-red);
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8), 0 0 20px white;
+            margin-top: 30px;
+            animation: glow 2s ease-in-out infinite alternate;
+            font-weight: bold;
+        }
+
+        @keyframes glow {
+            from { transform: scale(1); filter: drop-shadow(0 0 5px var(--primary-red)); }
+            to { transform: scale(1.1); filter: drop-shadow(0 0 20px white); }
+        }
+
+        /* Door Design */
+        .door {
+            position: absolute;
+            width: 50vw;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-red), var(--primary-red));
+            border: 4px solid #590d22;
+            z-index: 10;
+            transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        .door-left {
+            left: 0;
+            transform-origin: left;
+        }
+
+        .door-right {
+            right: 0;
+            transform-origin: right;
+        }
+
+        /* FIXED DOOR KNOBS */
+        .knob {
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ffd000, #b8860b);
+            border: 2px solid #590d22;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transform: translateY(-50%);
+        }
+
+        /* Position knobs near the meeting point without touching */
+        .door-left .knob {
+            right: 20px;
+        }
+
+        .door-right .knob {
+            left: 20px;
+        }
+
+        /* Opening Action */
+        .door-container.open .door-left {
+            transform: rotateY(-120deg);
+        }
+        .door-container.open .door-right {
+            transform: rotateY(120deg);
+        }
+        .door-container.open .reveal-content {
+            opacity: 1;
+        }
+
+        /* Button */
+        #open-btn {
+            position: absolute;
+            bottom: 15%;
+            padding: 18px 45px;
+            font-size: 1.4rem;
+            background: var(--gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 25;
+            transition: 0.3s;
+            color: var(--dark-red);
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #open-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 25px var(--gold);
+        }
+
+        /* Particle Heart Effect */
+        .heart-particle {
+            position: fixed;
+            color: var(--primary-red);
+            pointer-events: none;
+            z-index: 15;
+            animation: fly 3s linear forwards;
+        }
+
+        @keyframes fly {
+            0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="door-container" id="container">
+        <!-- Doors -->
+        <div class="door door-left">
+            <div class="knob"></div>
+        </div>
+        <div class="door door-right">
+            <div class="knob"></div>
+        </div>
+
+        <!-- Hidden Special Content -->
+        <div class="reveal-content">
+            <!-- IMPORTANT: Replace the src below with your direct image link -->
+            <img src="IMG_0642.jpg">
+            <div class="happy-valentine">Happy Valentine's Day! ❤️</div>
+        </div>
+
+        <button id="open-btn" onclick="openMagicDoor()">Open the Magic Door</button>
+    </div>
+
+    <script>
+        function openMagicDoor() {
+            const container = document.getElementById('container');
+            const btn = document.getElementById('open-btn');
+            
+            // Open Doors
+            container.classList.add('open');
+            btn.style.opacity = '0';
+            setTimeout(() => btn.style.display = 'none', 500);
+
+            // Create heart explosion effect
+            for(let i = 0; i < 60; i++) {
+                setTimeout(createHeart, i * 60);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '90vh';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
